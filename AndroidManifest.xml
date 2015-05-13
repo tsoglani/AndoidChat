@@ -3,13 +3,15 @@
     package="com.example.androidchat"
     android:versionCode="1"
     android:versionName="1.0" >
-   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-feature android:name="android.hardware.screen.portrait"/>
+ 
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="21" />
 
+      <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature android:name="android.hardware.screen.portrait"/>
+    
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
