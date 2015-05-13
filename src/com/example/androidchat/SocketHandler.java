@@ -5,18 +5,34 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.Array;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
+
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.net.wifi.WifiManager;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Toast;
 
 public class SocketHandler {
@@ -26,9 +42,10 @@ public class SocketHandler {
 	private BufferedReader in;
 	public static boolean isNotClosing = true;
 	private MessagesView screen;
-	public final static String IP = "147.229.214.43";
+	public  static String IP = "147.229.214.43";
 	private Activity activity;
 	public static String name = null;
+	boolean hasExeption=false;
 	public static final ArrayList<String> interactiveUsers = new ArrayList<String>() {
 		public boolean add(String s) {
 			if (contains(s)) {
@@ -48,6 +65,8 @@ public class SocketHandler {
 
 	};
 
+	
+	
 	public SocketHandler() {
 
 		new Thread() {
@@ -56,9 +75,9 @@ public class SocketHandler {
 					socket = new Socket(IP, port);
 					out = new PrintWriter(socket.getOutputStream(), true);
 					receiver();
-				} catch (UnknownHostException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
+					
+				} catch (Exception e) {
+					hasExeption=true;
 					e.printStackTrace();
 				}
 			}
@@ -66,13 +85,62 @@ public class SocketHandler {
 		}.start();
 
 	}
-
+	
 	public Activity getActivity() {
 		return activity;
 	}
 
-	public void setActivity(Activity activity) {
+	public void setActivity(final Activity activity) {
 		this.activity = activity;
+		
+		if (hasExeption) {
+			AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+
+			alert.setTitle("IP");
+			alert.setMessage("Enter external IP");
+
+			// Set an EditText view to get user input
+			final EditText input = new EditText(activity);
+			alert.setView(input);
+
+			alert.setPositiveButton("Ok",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+							String value = input.getText().toString();
+							if (!value.equals("")) {
+								IP = value;
+							
+								new Thread(){public void run(){
+									     Log.e("."+IP+".",IP);
+											try {
+												socket = new Socket(IP, port);
+												out = new PrintWriter(socket.getOutputStream(), true);
+												receiver();
+											}catch (Exception e) {
+												hasExeption = true;
+												e.printStackTrace();
+											}
+										
+									}}.start();
+                                  
+								
+							}
+
+						}
+					});
+
+			alert.setNegativeButton("Cancel",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+							// Canceled.
+						}
+					});
+
+			alert.show();
+			
+		}
 	}
 
 	public MessagesView getScreen() {

@@ -1,5 +1,8 @@
 package com.example.androidchat;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
@@ -49,7 +52,9 @@ public class SignInView extends ViewGroup {
 		            (keyCode == KeyEvent.KEYCODE_ENTER)) {
 		          // Perform action on key press
 		        	if (username.getText().toString().replace(" ", "").length() > 1) {
-						socketHandler.sendName(username.getText().toString());
+				
+							socketHandler.sendName(username.getText().toString());
+						
 					}else{
 						Toast.makeText(context, "put a real nickname", Toast.LENGTH_LONG).show();
 					}
@@ -67,7 +72,9 @@ public class SignInView extends ViewGroup {
 			@Override
 			public void onClick(View v) {
 				if (username.getText().toString().replace(" ", "").length() > 1) {
-					socketHandler.sendName(username.getText().toString());
+					
+						socketHandler.sendName(username.getText().toString());
+					
 				}else{
 					Toast.makeText(context, "put a real nickname", Toast.LENGTH_LONG).show();
 				}
